@@ -1,0 +1,42 @@
+netsh int tcp show global
+
+Get-NetAdapterChecksumOffload
+
+Get-NetTCPSetting | ft -AutoSize
+
+
+Get-NetAdapterRss -Name "Ethernet 2"
+Set-NetAdapterRss -Name "Ethernet 2" -NumberOfReceiveQueues 4
+
+
+Get-NetAdapterAdvancedProperty -Name "Ethernet 2"
+
+Set-NetAdapterAdvancedProperty -Name "Ethernet 2" -RegistryKeyword '*NumaNodeId' -RegistryValue '0'
+Set-NetAdapterAdvancedProperty -Name "Ethernet 2" -RegistryKeyword '*RssBaseProcGroup' -RegistryValue '0'
+Set-NetAdapterAdvancedProperty -Name "Ethernet 2" -RegistryKeyword '*RssMaxProcNumber' -RegistryValue '6'
+Set-NetAdapterAdvancedProperty -Name "Ethernet 2" -RegistryKeyword '*RssMaxProcGroup' -RegistryValue '0'
+Set-NetAdapterAdvancedProperty -Name "Ethernet 2" -RegistryKeyword '*LsoV2IPv4' -RegistryValue '1'
+
+Restart-NetAdapter -Name "Ethernet 2"
+
+
+Get-NetAdapterRsc
+
+Disable-NetAdapterRsc *
+
+Disable-NetAdapterRsc -Name Ethernetx
+
+netsh int tcp set global rsc=disabled
+
+
+
+Hyper-V machine network - disable Virtual Machine Queues
+NIC -> Configure -> Advanced -> Virtual Machine Dueues - Disabled
+
+
+
+New-VMSwitch -SwitchName "VMSwitch1" -SwitchType Internal
+Get-NetAdapter
+New-NetIPAddress -IPAddress 192.168.99.1 -PrefixLength 24 -InterfaceIndex 19
+New-NetNat -Name HyperVNat -InternalIPInterfaceAddressPrefix 192.168.99.0/24
+
